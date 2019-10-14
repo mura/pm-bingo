@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>総理大臣ビンゴ</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/marx/3.0.7/marx.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vue-material"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <script src="./primeministers.js"></script>
+  <style>
+    .date {
+      font-size: 3rem;
+    }
+    .name {
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <p>
+      <span class="date">{{ year }}年{{ month }}月{{ day }}日</span><br />
+      <span v-if="opened" class="name">{{ name }}</span><br />
+      <span v-if="opened">{{ description }}</span>
+    </p>
+    <button v-on:click="select">抽選</button>
+    <button v-on:click="open">OPEN</button>
+  </main>
+
+  <script>
+    Vue.use(VueMaterial.default)
+    var app = new Vue({
+      el: '#app',
+      data: {
+        name: "伊藤博文",
+        description: "第1次伊藤内閣",
+        year: 1885,
+        month: 12,
+        day: 22,
+        opened: false
+      },
+      methods: {
+        select: function() {
+          this.opened = false;
+          this.updateDate(10, this.nextMoment());
+        },
+        updateDate: function(count, selected) {
+          this.year = selected.year();
+          this.month = selected.month() + 1;
+          this.day = selected.date();
+          if (count == 0) {
+            this.updatePrimeMinister(selected);
+            return;
+          }
+          setTimeout(function() {
+            app.updateDate(--count, app.nextMoment());            
+          }, 100);
+        },
+        nextMoment: function () {
+          const now = moment();
+          const start = moment(primeministers[0].start);
+          const duration = moment.duration(now.diff(start), 'ms');
+          const randomDays = Math.floor(Math.random() * Math.floor(duration.asDays()));
+          return start.add(moment.duration(randomDays, 'days'));
+        },
+        updatePrimeMinister: function(selected) {
+          const pm = primeministers.find(function (element) {
+            let start = moment(element.start);
+            let end = element.end ? moment(element.end) : moment();
+            return selected.isBetween(start, end)
+          });
+
+          if (pm) {
+            this.name = pm.name;
+            this.description = pm.description;
+          }
+        },
+        open: function() {
+          this.opened = true;
+        }
+      }
+    })
+  </script>
+</body>
+</html>
