@@ -23,12 +23,16 @@
   <main id="app">
     <h1><small>総理大臣ビンゴ</small></h1>
     <p>
-      <span class="date">{{ year }}年{{ month }}月{{ day }}日</span><br />
-      <span v-if="opened" class="name">{{ name }}</span><br />
+      <span class="date">{{ formatedDate }}</span><br>
+      <span v-if="opened" class="name">{{ name }}</span><br>
       <span v-if="opened">{{ description }}</span>
     </p>
     <button v-on:click="select">抽選</button>
-    <button v-on:click="open">OPEN</button>
+    <button v-on:click="open">OPEN</button><br>
+    <input type="radio" id="ad" value="ad" v-model="era">
+    <label for="ad">西暦</label>
+    <input type="radio" id="je" value="je" v-model="era">
+    <label for="je">和暦</label>
   </main>
 
   <script>
@@ -36,12 +40,24 @@
     var app = new Vue({
       el: '#app',
       data: {
-        name: "伊藤博文",
-        description: "第1次伊藤内閣",
-        year: 1885,
-        month: 12,
-        day: 22,
-        opened: false
+        name: primeministers[0].name,
+        description: primeministers[0].description,
+        selected: moment(primeministers[0].start),
+        opened: true,
+        era: 'ad'
+      },
+      computed: {
+        formatedDate: function() {
+          if (this.era == 'je') {
+            return this.selected.toDate().toLocaleDateString("ja-JP-u-ca-japanese", {
+              era: 'long',
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric'
+            });
+          }
+          return this.selected.format("YYYY年M月D日");
+        }
       },
       methods: {
         select: function() {
@@ -49,9 +65,7 @@
           this.updateDate(10, this.nextMoment());
         },
         updateDate: function(count, selected) {
-          this.year = selected.year();
-          this.month = selected.month() + 1;
-          this.day = selected.date();
+          this.selected = selected;
           if (count == 0) {
             this.updatePrimeMinister(selected);
             return;
