@@ -1,7 +1,7 @@
 const primeministers = [
   {
     name: "伊藤博文",
-    start: "1885-12-21T14:41:01.000Z",
+    start: "1885-12-21T15:00:00.000Z",
     end: "1888-04-29T15:00:00.000Z",
     description: "第1次伊藤内閣"
   },
@@ -294,7 +294,7 @@ const primeministers = [
     description: "鈴木貫太郎内閣"
   },
   {
-    name: "鈴木貫太郎",
+    name: "東久邇宮稔彦王",
     start: "1945-08-16T15:00:00.000Z",
     end: "1945-10-08T15:00:00.000Z",
     description: "東久邇宮内閣"
