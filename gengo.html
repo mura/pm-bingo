@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>元号ビンゴ</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/marx/3.0.7/marx.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <style>
+    .date {
+      font-size: 2.5rem;
+    }
+    .name {
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <h1><small>元号ビンゴ</small></h1>
+    <p>
+      <span class="date">{{ selected.format("Y年M月D日") }}</span><br>
+      <span v-if="opened" class="name">{{ japaneseEra }}</span><br>
+    </p>
+    <button v-on:click="select">抽選</button>
+    <button v-on:click="open">OPEN</button><br>
+  </main>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        selected: moment("06450104"),
+        opened: true,
+      },
+      computed: {
+        japaneseEra: function() {
+          return this.selected.toDate().toLocaleDateString("ja-JP-u-ca-japanese", {
+            era: 'long',
+          });
+        }
+      },
+      methods: {
+        select: function() {
+          this.opened = false;
+          this.updateDate(10, this.nextMoment());
+        },
+        updateDate: function(count, selected) {
+          this.selected = selected;
+          if (count == 0) {
+            return;
+          }
+          setTimeout(function() {
+            app.updateDate(--count, app.nextMoment());            
+          }, 100);
+        },
+        nextMoment: function () {
+          const now = moment();
+          const start = moment("06450104");
+          const duration = moment.duration(now.diff(start), 'ms');
+          const randomDays = Math.floor(Math.random() * Math.floor(duration.asDays()));
+          return start.add(moment.duration(randomDays, 'days'));
+        },
+        open: function() {
+          this.opened = true;
+        }
+      }
+    })
+  </script>
+</body>
+</html>
