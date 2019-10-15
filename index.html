@@ -12,7 +12,7 @@
   <script src="./primeministers.js"></script>
   <style>
     .date {
-      font-size: 3rem;
+      font-size: 2.5rem;
     }
     .name {
       font-size: 2rem;
@@ -21,6 +21,7 @@
 </head>
 <body>
   <main id="app">
+    <h1><small>総理大臣ビンゴ</small></h1>
     <p>
       <span class="date">{{ year }}年{{ month }}月{{ day }}日</span><br />
       <span v-if="opened" class="name">{{ name }}</span><br />
